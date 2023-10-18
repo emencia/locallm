@@ -1,0 +1,41 @@
+# flake8: noqa: E501
+from typing import Any, Optional
+from locallm.core import Lm
+from locallm.schemas import InferenceParams, LmParams
+
+# run this script from the root of the repository: run a Koboldcpp server with Mistral 7B instruct then:
+# python -m examples.koboldcpp
+# to get the model used in this example:
+# wget https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.Q4_K_M.gguf
+
+
+def on_start_emit(data: Optional[Any]):
+    print("Start emitting")
+
+
+def main():
+    lm = Lm(
+        LmParams(
+            provider_type="koboldcpp",
+            is_verbose=True,
+            # on_start_emit=on_start_emit,
+        )
+    )
+    lm.load_model("", 8192)  # sets the context window size to 8196 tokens
+    # the template is for Mistral 7B: change it accordingly to you model requirements
+    template = "<s>[INST] {prompt} [/INST]"
+    lm.infer(
+        "list the planets in the solar system and their distance from the sun. "
+        "Answer in json",
+        InferenceParams(
+            template=template,
+            temperature=0.2,
+            top_p=0.35,
+            stream=True,
+            max_tokens=512,
+        ),
+    )
+
+
+if __name__ == "__main__":
+    main()
