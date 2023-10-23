@@ -37,6 +37,7 @@ def main():
             template=template,
             temperature=0.2,
             top_p=0.35,
+            stop=["</s>"],
         ),
     )
 

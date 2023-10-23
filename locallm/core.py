@@ -1,3 +1,4 @@
+from typing import Optional
 from .providers.koboldcpp import Koboldcpp
 from .providers.local import LocalLm
 from .providers.goinfer import Goinfer
@@ -19,8 +20,10 @@ class Lm(LmProvider):
         elif params.provider_type == "koboldcpp":
             self.provider = Koboldcpp(params)
 
-    def load_model(self, model_name: str, ctx: int) -> None:
-        self.provider.load_model(model_name, ctx)
+    def load_model(
+        self, model_name: str, ctx: int, gpu_layers: Optional[int] = None
+    ) -> None:
+        self.provider.load_model(model_name, ctx, gpu_layers)
 
     def infer(
         self,

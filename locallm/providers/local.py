@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pathlib import Path
 from llama_cpp import Llama
 from ..schemas import InferenceParams, LmParams, OnTokenType, OnStartEmitType
@@ -30,7 +30,7 @@ class LocalLm(LmProvider):
         if params.on_start_emit:
             self.on_start_emit = params.on_start_emit
 
-    def load_model(self, model_name: str, ctx: int):
+    def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int]):
         if self.is_verbose is True:
             print("Loading model", self.models_dir, model_name)
         p = Path(self.models_dir) / model_name
@@ -59,6 +59,9 @@ class LocalLm(LmProvider):
             del final_params["threads"]
         if "template" in final_params:
             del final_params["template"]
+        if "tfs" in final_params:
+            final_params["tfs_z"] = final_params["tfs"]
+            del final_params["tfs"]
         if self.is_verbose is True:
             print("Inference parameters:")
             print(final_params)

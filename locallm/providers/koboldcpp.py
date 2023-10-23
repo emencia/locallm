@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 import json
 import sseclient
 import requests
@@ -41,7 +41,7 @@ class Koboldcpp(LmProvider):
             "Accept": "text/event-stream",
         }
 
-    def load_model(self, model_name: str, ctx: int):
+    def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int]):
         if self.is_verbose is True:
             print("Setting model context window to", ctx)
         self.ctx = ctx
@@ -58,9 +58,6 @@ class Koboldcpp(LmProvider):
             print(final_prompt)
         # convert the params to the Kobold api format
         final_params = params.model_dump(exclude_none=True, exclude_unset=True)
-        if "tfs_z" in final_params:
-            final_params["tfs"] = final_params["tfs_z"]
-            del final_params["tfs_z"]
         if "stop" in final_params:
             final_params["stop_sequence"] = final_params["stop"]
             del final_params["stop"]

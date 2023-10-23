@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 import sseclient
 import requests
 
@@ -44,11 +44,13 @@ class Goinfer(LmProvider):
             "Accept": "text/event-stream",
         }
 
-    def load_model(self, model_name: str, ctx: int):
+    def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int]):
         if self.is_verbose:
             print("Loading model", self.models_dir, model_name)
         url = self.url + "/model/load"
         payload = {"name": model_name, "ctx": ctx}
+        if gpu_layers:
+            payload["gpu_layers"] = gpu_layers
         response = requests.post(url, headers=self.headers, json=payload)
         if response.ok:
             self.loaded_model = model_name
@@ -72,6 +74,9 @@ class Goinfer(LmProvider):
             raise Exception("No model is loaded: use the load_model method first")
         final_params = params.model_dump(exclude_none=True, exclude_unset=True)
         del final_params["template"]
+        if "tfs" in final_params:
+            final_params["tfs_z"] = final_params["tfs"]
+            del final_params["tfs"]
         if self.is_verbose:
             print("Inference parameters:")
             print(final_params)

@@ -26,7 +26,12 @@ class LmProvider(ABC):
         pass
 
     @abstractmethod
-    def load_model(self, model_name: str, ctx: int) -> None:
+    def load_model(
+        self,
+        model_name: str,
+        ctx: int,
+        gpu_layers: Optional[int],
+    ) -> None:
         pass
 
     @abstractmethod

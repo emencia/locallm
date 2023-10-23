@@ -36,7 +36,7 @@ class InferenceParams(BaseModel):
         The repeat penalty for the model.
     top_k : int, Optional
         The top k tokens to generate.
-    tfs_z : float, Optional
+    tfs : float, Optional
         The temperature for the model.
 
     Returns
@@ -60,7 +60,7 @@ class InferenceParams(BaseModel):
     presence_penalty: Optional[float] = None
     repeat_penalty: Optional[float] = None
     top_k: Optional[int] = None
-    tfs_z: Optional[float] = None
+    tfs: Optional[float] = None
 
 
 class LmParams(BaseModel):
