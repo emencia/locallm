@@ -45,8 +45,11 @@ class InferenceParams(BaseModel):
 
     Example
     -------
-    >>> InferenceParams(stream=True, template="Hello, world!")
-    InferenceParams(stream=True, template='Hello, world!')
+    >>> InferenceParams(stream=True, template="<s>[INST] {prompt} [/INST]")
+    {
+        "stream": True,
+        "template": "<s>[INST] {prompt} [/INST]"
+    }
     """
 
     stream: Optional[bool] = None
@@ -89,8 +92,13 @@ class LmParams(BaseModel):
 
     Example
     -------
-    >>> LmParams(provider_type="goinfer", models_dir="models", api_key="abc123")
-    LmParams(provider_type='goinfer', models_dir='models', api_key='abc123')
+    >>> LmParams(provider_type="goinfer", models_dir="/home/me/models", \
+    api_key="abc123")
+    {
+        "provider_type": "goinfer",
+        "models_dir": "/home/me/models",
+        "api_key": "abc123"
+    }
     """
 
     provider_type: LmProviderType

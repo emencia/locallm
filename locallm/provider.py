@@ -10,7 +10,7 @@ def defaultOnToken(token: str):
 
 class LmProvider(ABC):
     """
-    A class to provide access to a language model.
+    An abstract base class to describe a language model provider.
 
     ...
 
@@ -27,15 +27,16 @@ class LmProvider(ABC):
     server_url : str
         The URL of the language model server.
     is_verbose : bool
-        Whether to print the tokens as they are generated.
+        Whether to print more information.
     on_token : OnTokenType
-        The function to be called when a token is generated.
+        The function to be called when a token is generated. Default:
+        outputs the token to the terminal
     on_start_emit : OnStartEmitType
         The function to be called when the model starts emitting tokens.
 
     Example
     -------
-    >>> LmProvider(LmParams(model_name="my_model", ctx=1, gpu_layers=2))
+    >>> LmProvider(LmParams(model_name="my_model.gguf", ctx=2048, gpu_layers=32))
     <LmProvider>
     """
 
