@@ -44,7 +44,7 @@ class Goinfer(LmProvider):
             "Accept": "text/event-stream",
         }
 
-    def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int]):
+    def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int] = None):
         if self.is_verbose:
             print("Loading model", self.models_dir, model_name)
         url = self.url + "/model/load"

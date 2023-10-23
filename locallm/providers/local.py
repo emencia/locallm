@@ -30,7 +30,7 @@ class LocalLm(LmProvider):
         if params.on_start_emit:
             self.on_start_emit = params.on_start_emit
 
-    def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int]):
+    def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int] = None):
         if self.is_verbose is True:
             print("Loading model", self.models_dir, model_name)
         p = Path(self.models_dir) / model_name

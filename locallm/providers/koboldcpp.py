@@ -41,7 +41,7 @@ class Koboldcpp(LmProvider):
             "Accept": "text/event-stream",
         }
 
-    def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int]):
+    def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int] = None):
         if self.is_verbose is True:
             print("Setting model context window to", ctx)
         self.ctx = ctx

@@ -9,6 +9,36 @@ def defaultOnToken(token: str):
 
 
 class LmProvider(ABC):
+    """
+    A class to provide access to a language model.
+
+    ...
+
+    Attributes
+    ----------
+    llm : Optional[Llama]
+        The language model.
+    models_dir : str
+        The directory where the models are stored.
+    loaded_model : str
+        The name of the loaded model.
+    api_key : str
+        The API key for the language model.
+    server_url : str
+        The URL of the language model server.
+    is_verbose : bool
+        Whether to print the tokens as they are generated.
+    on_token : OnTokenType
+        The function to be called when a token is generated.
+    on_start_emit : OnStartEmitType
+        The function to be called when the model starts emitting tokens.
+
+    Example
+    -------
+    >>> LmProvider(LmParams(model_name="my_model", ctx=1, gpu_layers=2))
+    <LmProvider>
+    """
+
     llm: Optional[Llama] = None
     models_dir: str = ""
     loaded_model: str = ""
@@ -23,6 +53,19 @@ class LmProvider(ABC):
         self,
         params: LmParams,
     ) -> None:
+        """
+        Constructs all the necessary attributes for the LmProvider object.
+
+        Parameters
+        ----------
+            params : LmParams
+                The parameters for the language model.
+
+        Example
+        -------
+        >>> LmProvider(LmParams(model_name="my_model.gguf", ctx=2048, gpu_layers=32))
+        <LmProvider>
+        """
         pass
 
     @abstractmethod
@@ -32,6 +75,22 @@ class LmProvider(ABC):
         ctx: int,
         gpu_layers: Optional[int],
     ) -> None:
+        """
+        Loads a language model.
+
+        Parameters
+        ----------
+            model_name : str
+                The name of the model to load.
+            ctx : int
+                The context window size for the model.
+            gpu_layers : Optional[int]
+                The number of layers to offload to the GPU for the model.
+
+        Example
+        -------
+        >>> load_model("my_model.gguf", 2048, 32)
+        """
         pass
 
     @abstractmethod
@@ -40,4 +99,24 @@ class LmProvider(ABC):
         prompt: str,
         params: InferenceParams = InferenceParams(),
     ) -> str:
+        """
+        Run an inference query.
+
+        Parameters
+        ----------
+        prompt : str
+            The prompt to generate text from.
+        params : InferenceParams
+            The parameters for the inference query.
+
+        Returns
+        -------
+        text : str
+            The generated text.
+
+        Example
+        -------
+        >>> infer("<s>[INST] List the planets in the solar system [/INST]")
+        The planets ...
+        """
         pass
