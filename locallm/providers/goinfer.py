@@ -3,23 +3,32 @@ from typing import Any, Dict, Optional
 import sseclient
 import requests
 
-from ..schemas import InferenceParams, LmParams, OnTokenType, OnStartEmitType
+from ..schemas import (
+    InferenceParams,
+    InferenceResult,
+    LmParams,
+    OnTokenType,
+    OnStartEmitType,
+    LmProviderType,
+)
 from ..provider import LmProvider, defaultOnToken
 
 
-class Goinfer(LmProvider):
+class GoinferLm(LmProvider):
+    ptype: LmProviderType
     models_dir = ""
     loaded_model = ""
     headers: Dict[str, str]
     url: str
     is_verbose = False
-    on_token: OnTokenType
-    on_start_emit: OnStartEmitType
+    on_token: OnTokenType | None = None
+    on_start_emit: OnStartEmitType | None = None
 
     def __init__(
         self,
         params: LmParams,
     ) -> None:
+        self.ptype = "goinfer"
         if params.server_url is None:
             self.url = "http://localhost:5143"
             print(
@@ -64,7 +73,7 @@ class Goinfer(LmProvider):
         self,
         prompt: str,
         params: InferenceParams = InferenceParams(),
-    ) -> str:
+    ) -> InferenceResult:
         tpl = params.template or "{prompt}"
         final_prompt = tpl.replace("{prompt}", prompt)
         if self.is_verbose:
@@ -73,7 +82,8 @@ class Goinfer(LmProvider):
         if self.loaded_model == "":
             raise Exception("No model is loaded: use the load_model method first")
         final_params = params.model_dump(exclude_none=True, exclude_unset=True)
-        del final_params["template"]
+        if "template" in final_params:
+            del final_params["template"]
         if "tfs" in final_params:
             final_params["tfs_z"] = final_params["tfs"]
             del final_params["tfs"]
@@ -104,4 +114,4 @@ class Goinfer(LmProvider):
                     if self.is_verbose:
                         print("Thinking time:", data["data"]["thinking_time_format"])
                     # print("SYSTEM:", data, "\n")
-        return res["data"]["text"]
+        return res["data"]

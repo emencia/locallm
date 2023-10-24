@@ -1,22 +1,31 @@
 from typing import List, Optional
 from pathlib import Path
 from llama_cpp import Llama
-from ..schemas import InferenceParams, LmParams, OnTokenType, OnStartEmitType
+from ..schemas import (
+    InferenceParams,
+    InferenceResult,
+    LmParams,
+    OnTokenType,
+    OnStartEmitType,
+    LmProviderType,
+)
 from ..provider import LmProvider, defaultOnToken
 
 
 class LocalLm(LmProvider):
+    ptype: LmProviderType
     llm: Llama | None = None
     models_dir = ""
     loaded_model = ""
     is_verbose = False
-    on_token: OnTokenType
-    on_start_emit: OnStartEmitType
+    on_token: OnTokenType | None = None
+    on_start_emit: OnStartEmitType | None = None
 
     def __init__(
         self,
         params: LmParams,
     ) -> None:
+        self.ptype = "local"
         if params.models_dir is None:
             raise ValueError("Provide a models_dir parameter")
         # print("Initializing lm", model_path)
@@ -45,7 +54,7 @@ class LocalLm(LmProvider):
         self,
         prompt: str,
         params: InferenceParams = InferenceParams(),
-    ) -> str:
+    ) -> InferenceResult:
         tpl = params.template or "{prompt}"
         final_prompt = tpl.replace("{prompt}", prompt)
         if self.is_verbose is True:
@@ -71,14 +80,22 @@ class LocalLm(LmProvider):
         )
         buf: List[str] = []
         i = 0
-        for output in stream:
-            if i == 0:
-                if self.on_start_emit:
-                    self.on_start_emit(None)
-            txt = output["choices"][0]["text"]  # type: ignore
-            if self.on_token:
-                self.on_token(txt)
-            buf.append(txt)
-            i += 1
-        text = "".join(buf)
-        return text
+        if params.stream:
+            for output in stream:
+                if i == 0:
+                    if self.on_start_emit:
+                        self.on_start_emit(None)
+                print("OUT", output)
+                txt = ""
+                try:
+                    txt = output["choices"][0]["text"]  # type: ignore
+                except Exception:
+                    pass
+                if self.on_token:
+                    self.on_token(txt)
+                buf.append(txt)
+                i += 1
+            text = "".join(buf)
+        else:
+            text = stream["choices"][0]["text"]  # type: ignore
+        return {"text": text, "stats": {}}

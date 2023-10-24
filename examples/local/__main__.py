@@ -1,11 +1,10 @@
 # flake8: noqa: E501
 from typing import Any, Optional
 import sys
-from locallm.core import Lm
-from locallm.schemas import InferenceParams, LmParams
+from locallm import InferenceParams, LmParams, LocalLm
 
-# run this script from the root of the repository:
-# python -m examples.local /home/me/models/dir
+# > cd examples
+# > python -m goinfer /home/me/models
 # the argument is the path to the models directory
 # to get the model used in this example:
 # wget https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.Q4_K_M.gguf
@@ -16,9 +15,8 @@ def on_start_emit(data: Optional[Any]):
 
 
 def main(models_dir):
-    lm = Lm(
+    lm = LocalLm(
         LmParams(
-            provider_type="local",
             models_dir=models_dir,
             is_verbose=True,
             on_start_emit=on_start_emit,
@@ -42,6 +40,6 @@ def main(models_dir):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 1:
+    if len(sys.argv) <= 1:
         raise Exception("Provide a models directory path")
     main(sys.argv[1])

@@ -1,7 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 from llama_cpp import Llama
-from .schemas import InferenceParams, LmParams, OnStartEmitType, OnTokenType
+from .schemas import (
+    InferenceParams,
+    InferenceResult,
+    LmParams,
+    OnStartEmitType,
+    OnTokenType,
+    LmProviderType,
+)
 
 
 def defaultOnToken(token: str):
@@ -40,14 +47,15 @@ class LmProvider(ABC):
     <LmProvider>
     """
 
+    ptype: LmProviderType
     llm: Optional[Llama] = None
     models_dir: str = ""
     loaded_model: str = ""
     api_key: str = ""
     server_url: str = ""
     is_verbose = False
-    on_token: OnTokenType
-    on_start_emit: OnStartEmitType
+    on_token: OnTokenType | None = None
+    on_start_emit: OnStartEmitType | None = None
 
     @abstractmethod
     def __init__(
@@ -99,7 +107,7 @@ class LmProvider(ABC):
         self,
         prompt: str,
         params: InferenceParams = InferenceParams(),
-    ) -> str:
+    ) -> InferenceResult:
         """
         Run an inference query.
 
@@ -112,12 +120,15 @@ class LmProvider(ABC):
 
         Returns
         -------
-        text : str
-            The generated text.
+        result : InferenceResult
+            The generated text and the stats if any
 
         Example
         -------
         >>> infer("<s>[INST] List the planets in the solar system [/INST]")
-        The planets ...
+        {
+            "text": "The planets ...",
+            "stats": {}, // depends on the provider
+        }
         """
         pass

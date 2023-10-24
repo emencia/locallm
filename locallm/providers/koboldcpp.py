@@ -2,23 +2,32 @@ from typing import Dict, Optional
 import json
 import sseclient
 import requests
-from ..schemas import InferenceParams, LmParams, OnTokenType, OnStartEmitType
+from ..schemas import (
+    InferenceParams,
+    InferenceResult,
+    LmParams,
+    OnTokenType,
+    OnStartEmitType,
+    LmProviderType,
+)
 from ..provider import LmProvider, defaultOnToken
 
 
-class Koboldcpp(LmProvider):
+class KoboldcppLm(LmProvider):
+    ptype: LmProviderType
     loaded_model = ""
     headers: Dict[str, str]
     url: str
     ctx = 8192
     is_verbose = False
-    on_token: OnTokenType
-    on_start_emit: OnStartEmitType
+    on_token: OnTokenType | None = None
+    on_start_emit: OnStartEmitType | None = None
 
     def __init__(
         self,
         params: LmParams,
     ) -> None:
+        self.ptype = "koboldcpp"
         if params.server_url is None:
             self.url = "http://localhost:5001"
             print(
@@ -45,12 +54,13 @@ class Koboldcpp(LmProvider):
         if self.is_verbose is True:
             print("Setting model context window to", ctx)
         self.ctx = ctx
+        self.loaded_model = model_name
 
     def infer(
         self,
         prompt: str,
         params: InferenceParams = InferenceParams(),
-    ) -> str:
+    ) -> InferenceResult:
         tpl = params.template or "{prompt}"
         final_prompt = tpl.replace("{prompt}", prompt)
         if self.is_verbose is True:
@@ -101,4 +111,4 @@ class Koboldcpp(LmProvider):
                 self.on_token(data["token"])
             buf.append(data["token"])
             i += 1
-        return "".join(buf)
+        return {"text": "".join(buf), "stats": {}}

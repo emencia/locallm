@@ -1,10 +1,10 @@
 # flake8: noqa: E501
 from typing import Any, Optional
-from locallm.core import Lm
-from locallm.schemas import InferenceParams, LmParams
+from locallm import InferenceParams, LmParams, KoboldcppLm
 
-# run this script from the root of the repository: run a Koboldcpp server with Mistral 7B instruct then:
-# python -m examples.koboldcpp
+# run a Koboldcpp server with Mistral 7B instruct then:
+# > cd examples
+# > python -m koboldcpp
 # to get the model used in this example:
 # wget https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.Q4_K_M.gguf
 
@@ -14,9 +14,8 @@ def on_start_emit(data: Optional[Any]):
 
 
 def main():
-    lm = Lm(
+    lm = KoboldcppLm(
         LmParams(
-            provider_type="koboldcpp",
             is_verbose=True,
             # on_start_emit=on_start_emit,
         )

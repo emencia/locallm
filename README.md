@@ -4,21 +4,21 @@ An api to query local language models using different backends. Supported backen
 
 - [Llama.cpp Python](https://github.com/abetlen/llama-cpp-python): the local Python bindings for Llama.cpp
 - [Kobold.cpp](https://github.com/LostRuins/koboldcpp): the Koboldcpp api server
+- [Ollama](https://github.com/jmorganca/ollama): the Ollama api server
 - [Goinfer](https://github.com/synw/goinfer): the Goinfer api server
 
 ## Quickstart
 
-For now clone the repository, a pip package is to come
+For now clone the repository and install the requiremnts. A pip package is to come
 
 ### Local
 
 ```python
-from locallm.core import Lm, LmParams, InferenceParams
+from locallm import GoinferLm, InferenceParams, LmParams
 
-lm = Lm(
+lm = GoinferLm(
     LmParams(
-        provider_type="local",
-        models_dir="/home/me/models/dir",
+        models_dir="/home/me/my/models/dir"
         is_verbose=True,
     )
 )
@@ -39,13 +39,10 @@ lm.infer(
 ### Koboldcpp
 
 ```python
-from locallm.core import Lm, LmParams, InferenceParams
+from locallm import KoboldcppLm, LmParams, InferenceParams
 
-lm = Lm(
-    LmParams(
-        provider_type="koboldcpp",
-        is_verbose=True,
-    )
+lm = KoboldcppLm(
+    LmParams(is_verbose=True)
 )
 lm.load_model("", 8192) # sets the context window size to 8196 tokens
 template = "<s>[INST] {prompt} [/INST]"
@@ -61,14 +58,34 @@ lm.infer(
 )
 ```
 
+### Ollama
+
+```python
+from locallm import OllamaLm, LmParams, InferenceParams
+
+lm = Ollama(
+    LmParams(is_verbose=True)
+)
+lm.load_model("mistral-7b-instruct-v0.1.Q4_K_M.gguf", 8192)
+template = "<s>[INST] {prompt} [/INST]"
+lm.infer(
+    "list the planets in the solar system",
+    InferenceParams(
+        stream=True,
+        template=template,
+        temperature=0.2,
+        top_p=0.35,
+    ),
+)
+```
+
 ### Goinfer
 
 ```python
-from locallm.core import Lm, LmParams, InferenceParams
+from locallm import GoinferLm, LmParams, InferenceParams
 
-lm = Lm(
+lm = GoinferLm(
     LmParams(
-        provider_type="goinfer",
         api_key="7aea109636aefb984b13f9b6927cd174425a1e05ab5f2e3935ddfeb183099465",
     )
 )
@@ -89,7 +106,8 @@ lm.infer(
 
 ## LmProvider
 
-An abstract base class to describe a language model provider.
+An abstract base class to describe a language model provider. All the
+providers implement this api
 
 ### Attributes
 
@@ -127,13 +145,7 @@ Constructs all the necessary attributes for the LmProvider object.
 #### Example
 
 ```python
-LmProvider(
-    LmParams(
-        model_name="mistral-7b-instruct-v0.1.Q4_K_M.gguf",
-        ctx=8192,
-        gpu_layers=32
-    )
-)
+lm = KoboldcppLm(LmParams())
 ```
 
 ### `load_model`
@@ -163,7 +175,7 @@ Run an inference query.
 
 #### Returns
 
-- **text** `str`: the generated text.
+- **result** `InferenceResult`: the generated text and stats
 
 #### Example
 
@@ -209,19 +221,17 @@ Parameters for language model.
 
 ### Args
 
-- **provider\_type** `Literal["local", "goinfer", "koboldcpp"]`: The provider type for the language model.
 - **models\_dir** `str, Optional`: The directory containing the language model.
 - **api\_key** `str, Optional`: The API key for the language model.
 - **server\_url** `str, Optional`: The server URL for the language model.
 - **is\_verbose** `bool, Optional`: Whether to enable verbose output.
-- **on\_token** `Callable[[str], None], Optional`: A callback function to be called on each token generated.
+- **on\_token** `Callable[[str], None], Optional`: A callback function to be called on each token generated. If not provided the default will output tokens to the command line as they arrive
 - **on\_start\_emit** `Callable[[Optional[Any]], None], Optional`: A callback function to be called on the start of the emission.
 
 ### Example
 
 ```python
 LmParams(
-    provider_type="goinfer",
     models_dir="/home/me/models",
     api_key="abc123",
 )

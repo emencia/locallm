@@ -1,10 +1,11 @@
 # flake8: noqa: E501
 from typing import Any
-from locallm import Lm, InferenceParams, LmParams
+from locallm import GoinferLm, InferenceParams, LmParams
 
 
-# run this script from the root of the repository: run a Goinfer local server then:
-# python -m examples.goinfer
+# run a Goinfer local server then:
+# > cd examples
+# > python -m goinfer
 # to get the model used in this example:
 # wget https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.Q4_K_M.gguf
 
@@ -19,9 +20,8 @@ def on_start_emit(data: Any | None = None):
 
 
 def main():
-    lm = Lm(
+    lm = GoinferLm(
         LmParams(
-            provider_type="goinfer",
             api_key="7aea109636aefb984b13f9b6927cd174425a1e05ab5f2e3935ddfeb183099465",
             # on_token=on_token,
             on_start_emit=on_start_emit,

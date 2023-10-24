@@ -1,4 +1,0 @@
-pydantic
-requests
-sseclient-py
-llama-cpp-python

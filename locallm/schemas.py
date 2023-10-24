@@ -1,8 +1,8 @@
-from typing import Any, Callable, List, Literal, Optional
+from typing import Any, Callable, Dict, List, Literal, Optional, TypedDict
 from pydantic import BaseModel
 
 
-LmProviderType = Literal["local", "goinfer", "koboldcpp"]
+LmProviderType = Literal["local", "goinfer", "koboldcpp", "ollama"]
 
 OnTokenType = Callable[[str], None]
 
@@ -71,7 +71,7 @@ class LmParams(BaseModel):
 
     Args
     ----
-    provider_type : Literal["local", "goinfer", "koboldcpp"]
+    provider_type : Literal["local", "goinfer", "koboldcpp", "ollama"]
         The provider type for the language model.
     models_dir : str, Optional
         The directory containing the language model.
@@ -92,19 +92,21 @@ class LmParams(BaseModel):
 
     Example
     -------
-    >>> LmParams(provider_type="goinfer", models_dir="/home/me/models", \
-    api_key="abc123")
+    >>> LmParams(provider_type="goinfer", api_key="abc123")
     {
         "provider_type": "goinfer",
-        "models_dir": "/home/me/models",
         "api_key": "abc123"
     }
     """
 
-    provider_type: LmProviderType
     models_dir: Optional[str] = None
     api_key: Optional[str] = None
     server_url: Optional[str] = None
     is_verbose: Optional[bool] = None
     on_token: Optional[OnTokenType] = None
     on_start_emit: Optional[OnStartEmitType] = None
+
+
+class InferenceResult(TypedDict):
+    text: str
+    stats: Dict[str, Any]

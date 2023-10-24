@@ -1,0 +1,19 @@
+{
+    "__class_name": "Locallm",
+    "_checkout": null,
+    "_cookiecutter_sveetch_python_version": "0.4.2",
+    "_output_dir": "/home/ggg/dev/testing",
+    "_repo_dir": "/home/ggg/.cookiecutters/cookiecutter-sveetch-python",
+    "_template": "https://github.com/sveetch/cookiecutter-sveetch-python.git",
+    "app_name": "locallm",
+    "author_email": "contact@emencia.com",
+    "author_name": "emencia",
+    "author_username": "emencia",
+    "include_cli": true,
+    "init_git_repository": false,
+    "package_name": "locallm",
+    "project_name": "locallm",
+    "project_short_description": "An api to query local language models using different backends",
+    "pypi_username": "emencia",
+    "version": "0.1.0"
+}

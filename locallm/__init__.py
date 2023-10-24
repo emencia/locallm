@@ -1,15 +1,20 @@
-from .core import Lm
+"""An api to query local language models using different backends"""
+from importlib.metadata import version
 from .provider import LmProvider
-from .providers.goinfer import Goinfer
-from .providers.koboldcpp import Koboldcpp
+from .providers.goinfer import GoinferLm
+from .providers.koboldcpp import KoboldcppLm
+from .providers.ollama import OllamaLm
 from .providers.local import LocalLm
 from .schemas import InferenceParams, LmParams, LmProviderType, OnTokenType
 
+__pkgname__ = "locallm"
+__version__ = version(__pkgname__)
+
 __all__ = [
-    "Lm",
     "LmProvider",
-    "Goinfer",
-    "Koboldcpp",
+    "GoinferLm",
+    "KoboldcppLm",
+    "OllamaLm",
     "LocalLm",
     "InferenceParams",
     "LmParams",
