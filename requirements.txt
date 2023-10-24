@@ -1,0 +1,7 @@
+click>=8.0
+colorlog
+colorama
+pydantic
+requests
+sseclient-py
+llama-cpp-python
