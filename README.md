@@ -14,9 +14,9 @@ For now clone the repository and install the requiremnts. A pip package is to co
 ### Local
 
 ```python
-from locallm import GoinferLm, InferenceParams, LmParams
+from locallm import LocalLm, InferenceParams, LmParams
 
-lm = GoinferLm(
+lm = LocalLm(
     LmParams(
         models_dir="/home/me/my/models/dir"
         is_verbose=True,
@@ -123,13 +123,7 @@ providers implement this api
 ### Example
 
 ```python
-LmProvider(
-    LmParams(
-        model_name="mistral-7b-instruct-v0.1.Q4_K_M.gguf",
-        ctx=8192,
-        gpu_layers=32
-    )
-)
+OllamaLm(LmParams(is_verbose=True))
 ```
 
 Methods:
