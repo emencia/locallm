@@ -1,4 +1,4 @@
-# LocalLm autodoc example
+# LocalLm autodoc example
 
 This example generates a docstring for a Python code block
 
@@ -23,7 +23,7 @@ wget https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/
 Run the backend server:
 
 ```bash
-python koboldcpp.py --contextsize 8192 --model ~/dev/lm/models/mistral-7b-instruct-v0.1.Q4_K_M.gguf --smartcontext
+python koboldcpp.py --contextsize 8192 --model ./models/mistral-7b-instruct-v0.1.Q4_K_M.gguf --smartcontext
 ```
 
 ## Run
