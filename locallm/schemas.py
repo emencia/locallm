@@ -10,46 +10,43 @@ OnStartEmitType = Callable[[Optional[Any]], None]
 
 
 class InferenceParams(BaseModel):
-    """Parameters for inference.
+    """
+    Inference parameters for a language model. These parameters control how the
+    model generates text.
 
-    Args
-    ----
-    stream : bool, Optional
-        Whether to stream the output.
-    template : str, Optional
-        The template to use for the inference.
-    threads : int, Optional
-        The number of threads to use for the inference.
-    max_tokens : int, Optional
-        The maximum number of tokens to generate.
-    temperature : float, Optional
-        The temperature for the model.
-    top_p : float, Optional
-        The probability cutoff for the top k tokens.
-    stop : List[str], Optional
-        A list of words to stop the model from generating.
-    frequency_penalty : float, Optional
-        The frequency penalty for the model.
-    presence_penalty : float, Optional
-        The presence penalty for the model.
-    repeat_penalty : float, Optional
-        The repeat penalty for the model.
-    top_k : int, Optional
-        The top k tokens to generate.
-    tfs : float, Optional
-        The temperature for the model.
+    Args:
+        stream (Optional[bool], optional): Whether to use streaming inference or batch
+            inference. Defaults to `None`.
+        template (Optional[str], optional): A template string to be used as input to
+            the model. Defaults to `None`.
+        threads (Optional[int], optional): The number of threads to use during
+            inference. Defaults to `None`.
+        max_tokens (Optional[int], optional): The maximum number of tokens to generate.
+            Defaults to `None`.
+        temperature (Optional[float], optional): The temperature parameter, which
+            controls the probability distribution over vocabulary. Defaults to `None`.
+        top_p (Optional[float], optional): The probability cutoff for top-p sampling.
+            Defaults to `None`.
+        stop (Optional[List[str]], optional): A list of words to stop the model from
+            generating. Defaults to `None`.
+        frequency_penalty (Optional[float], optional): The frequency penalty for rare
+            words. Defaults to `None`.
+        presence_penalty (Optional[float], optional): The presence penalty for rare
+            words. Defaults to `None`.
+        repeat_penalty (Optional[float], optional): The repeat penalty for repeating
+            sequences of words. Defaults to `None`.
+        top_k (Optional[int], optional): The top k most likely words to sample from.
+            Defaults to `None`.
+        tfs (Optional[float], optional): The temperature factor for top-k sampling.
+            Defaults to `None`.
 
-    Returns
-    -------
-    None
+    Returns:
+        None
 
-    Example
-    -------
-    >>> InferenceParams(stream=True, template="<s>[INST] {prompt} [/INST]")
-    {
-        "stream": True,
-        "template": "<s>[INST] {prompt} [/INST]"
-    }
+    Example:
+        >>> params = InferenceParams(stream=True, max_tokens=10)
+        >>> params.stream  # True
+        >>> params.max_tokens  # 10
     """
 
     stream: Optional[bool] = None
@@ -67,36 +64,26 @@ class InferenceParams(BaseModel):
 
 
 class LmParams(BaseModel):
-    """Parameters for language model.
+    """
+    Parameters for the Language Model.
 
-    Args
-    ----
-    provider_type : Literal["local", "goinfer", "koboldcpp", "ollama"]
-        The provider type for the language model.
-    models_dir : str, Optional
-        The directory containing the language model.
-    api_key : str, Optional
-        The API key for the language model.
-    server_url : str, Optional
-        The server URL for the language model.
-    is_verbose : bool, Optional
-        Whether to enable verbose output.
-    on_token : Callable[[str], None], Optional
-        A callback function to be called on each token generated.
-    on_start_emit : Callable[[Optional[Any]], None], Optional
-        A callback function to be called on the start of the emission.
+    Args:
+        models_dir (Optional[str], optional): The directory containing the language
+            models. Defaults to None.
+        api_key (Optional[str], optional): The API key for accessing the language
+            models. Defaults to None.
+        server_url (Optional[str], optional): The URL of the server hosting the language
+            models. Defaults to None.
+        is_verbose (Optional[bool], optional): Whether to print verbose output. Defaults
+            to False.
+        on_token (Optional[OnTokenType], optional): A function to call for when a new
+            token is received. Defaults to None. If not specified the default function
+            will output the token to the terminal
+        on_start_emit (Optional[OnStartEmitType], optional): A function to call for
+            when the model starts emitting. Defaults to None.
 
-    Returns
-    -------
-    None
-
-    Example
-    -------
-    >>> LmParams(provider_type="goinfer", api_key="abc123")
-    {
-        "provider_type": "goinfer",
-        "api_key": "abc123"
-    }
+    Example:
+        >>> lm_params = LmParams(models_dir="/path/to/models", api_key="my_api_key")
     """
 
     models_dir: Optional[str] = None
@@ -108,5 +95,27 @@ class LmParams(BaseModel):
 
 
 class InferenceResult(TypedDict):
+    """
+    Represents the result of an inference process. Contains both the
+    text output by the lm and statistics about the inference if available.
+
+    Args:
+        text (str): The input text used for the inference.
+        stats (Dict[str, Any]): A dictionary containing any statistics generated
+            during the inference. These can include things like time taken or total
+            tokens. Note that it depends on the backend used
+
+    Example:
+        >>> result = InferenceResult(
+            text="The quick brown fox jumps over the lazy dog",
+            stats={"total_tokens": 31}
+        )
+        >>> print(result)
+        {
+            'text': 'The quick brown fox jumps over the lazy dog',
+            'stats': {"total_tokens": 31}
+        }
+    """
+
     text: str
     stats: Dict[str, Any]

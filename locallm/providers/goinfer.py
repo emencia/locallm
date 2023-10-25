@@ -28,6 +28,19 @@ class GoinferLm(LmProvider):
         self,
         params: LmParams,
     ) -> None:
+        """
+        Initialize a new instance of the GoinferLm class.
+
+        Args:
+            params (LmParams): The parameters to use when initializing the instance.
+
+        Raises:
+            ValueError: If `params.api_key` is not provided.
+
+        Example:
+            >>> from locallm import GoinferLm, LmParams
+            >>> lm = GoinferLm(LmParams(api_key="5dz78.."))
+        """
         self.ptype = "goinfer"
         if params.server_url is None:
             self.url = "http://localhost:5143"
@@ -54,6 +67,20 @@ class GoinferLm(LmProvider):
         }
 
     def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int] = None):
+        """
+        Loads a model on the server
+
+        Args:
+            model_name (str): The name of the model to be loaded.
+            ctx (int): The context window size for the model.
+            gpu_layers (Optional[int], optional): The number of GPU layers to use.
+                Defaults to None.
+
+        Example:
+            >>> from locallm import GoinferLm, LmParams
+            >>> lm = GoinferLm(LmParams(api_key="5dz78.."))
+            >>> lm.load_model('my_model.gguf', 2048)
+        """
         if self.is_verbose:
             print("Loading model", self.models_dir, model_name)
         url = self.url + "/model/load"
@@ -74,6 +101,29 @@ class GoinferLm(LmProvider):
         prompt: str,
         params: InferenceParams = InferenceParams(),
     ) -> InferenceResult:
+        """
+        Run an inference query for a prompt and params
+
+        Args:
+            prompt (str): The prompt to use for the inference.
+            params (InferenceParams, optional): The inference parameters. Defaults to
+                InferenceParams().
+
+        Returns:
+            InferenceResult: The result of the inference.
+
+        Raises:
+            Exception: If no model is loaded. Use the load_model method first.
+
+        Example:
+            >>> from locallm import GoinferLm, LmParams
+            >>> lm = GoinferLm(LmParams(api_key="5dz78.."))
+            >>> lm.load_model('my_model.gguf', 2048)
+            >>> result = lm.infer("What is the capital of France?")
+            Paris
+            >>> print(result)
+            {'text': 'Paris', 'stats': {}}
+        """
         tpl = params.template or "{prompt}"
         final_prompt = tpl.replace("{prompt}", prompt)
         if self.is_verbose:
