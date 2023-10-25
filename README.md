@@ -19,7 +19,6 @@ from locallm import LocalLm, InferenceParams, LmParams
 lm = LocalLm(
     LmParams(
         models_dir="/home/me/my/models/dir"
-        is_verbose=True,
     )
 )
 lm.load_model("mistral-7b-instruct-v0.1.Q4_K_M.gguf", 8192)
@@ -29,7 +28,6 @@ lm.infer(
     InferenceParams(
         template=template,
         temperature=0.2,
-        top_p=0.35,
         stream=True,
         max_tokens=512,
     ),
@@ -50,8 +48,6 @@ lm.infer(
     "list the planets in the solar system",
     InferenceParams(
         template=template,
-        temperature=0.2,
-        top_p=0.35,
         stream=True,
         max_tokens=512,
     ),
@@ -73,8 +69,7 @@ lm.infer(
     InferenceParams(
         stream=True,
         template=template,
-        temperature=0.2,
-        top_p=0.35,
+        temperature=0.5,
     ),
 )
 ```
