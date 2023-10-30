@@ -9,7 +9,7 @@ An api to query local language models using different backends. Supported backen
 
 ## Quickstart
 
-For now clone the repository and install the requiremnts. A pip package is to come
+For now clone the repository and install the requirements. A pip package is to come
 
 ### Local
 
@@ -97,6 +97,20 @@ lm.infer(
 )
 ```
 
+## Examples
+
+Providers:
+
+- [Llama.cpp Python](https://github.com/abetlen/llama-cpp-python/examples/local) provider
+- [Kobold.cpp](https://github.com/LostRuins/koboldcpp/examples/koboldcpp) provider
+- [Ollama](https://github.com/jmorganca/ollama/ollama) provider
+- [Goinfer](https://github.com/synw/goinfer/goinfer) provider
+
+Other:
+
+- [Cli](https://github.com/abetlen/llama-cpp-python/examples/cli): a Python terminal client
+- [Docstrings]((https://github.com/abetlen/llama-cpp-python/examples/local)): generate docstrings from code
+
 ## Api
 
 ## LmProvider
@@ -118,7 +132,7 @@ providers implement this api
 ### Example
 
 ```python
-OllamaLm(LmParams(is_verbose=True))
+lm = OllamaLm(LmParams(is_verbose=True))
 ```
 
 Methods:
@@ -150,7 +164,7 @@ Loads a language model.
 #### Example
 
 ```python
-load_model("my_model.gguf", 2048, 32)
+lm.load_model("my_model.gguf", 2048, 32)
 ```
 
 ### `infer`
@@ -169,7 +183,7 @@ Run an inference query.
 #### Example
 
 ```python
->>> infer("<s>[INST] List the planets in the solar system [/INST>")
+>>> lm.infer("<s>[INST] List the planets in the solar system [/INST>")
 The planets in the solar system are: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune.
 ```
 
@@ -225,3 +239,21 @@ LmParams(
     api_key="abc123",
 )
 ```
+
+## Tests
+
+To configure the tests create a `tests/localconf.py` containing the some local config info to
+run the tests:
+
+```py
+# absolute path to your models dir
+MODELS_DIR = "/home/me/my/models/dir"
+# the model to use in the tests
+MODEL = "q5_1-gguf-mamba-gpt-3B_v4.gguf"
+# the Goinfer api key
+API_KEY = "7aea109636aefb984b13f9b6927cd174425a1e05ab5f2e3935ddfeb183099465"
+# the context window size for the tests
+CTX = 2048
+```
+
+Be sure to have the corresponding backend up before running a test.
