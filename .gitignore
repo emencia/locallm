@@ -18,6 +18,7 @@ htmlcov/
 nosetests.xml
 coverage.xml
 .tox
+tests/localconf.py
 
 # VS Code
 .vscode
