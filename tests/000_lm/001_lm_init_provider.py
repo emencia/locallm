@@ -1,8 +1,6 @@
 from locallm import LocalLm, GoinferLm, KoboldcppLm, OllamaLm
 from locallm.schemas import LmParams
-
-MODELS_DIR = "/home/ggg/dev/lm/models"
-API_KEY = "7aea109636aefb984b13f9b6927cd174425a1e05ab5f2e3935ddfeb183099465"
+from tests.localconf import MODELS_DIR, API_KEY
 
 
 def test_init_local_lm():
