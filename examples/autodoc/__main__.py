@@ -50,8 +50,6 @@ def run(rawpath: str, rawnode: str | None = None):
     print(f"----- Creating docstring{s} for source ----")
     print(source)
     print("-----------------------------------------")
-    return
-    # return
     infer(source, template)
 
 
