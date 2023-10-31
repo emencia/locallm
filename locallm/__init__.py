@@ -5,7 +5,13 @@ from .providers.goinfer import GoinferLm
 from .providers.koboldcpp import KoboldcppLm
 from .providers.ollama import OllamaLm
 from .providers.local import LocalLm
-from .schemas import InferenceParams, LmParams, LmProviderType, OnTokenType
+from .schemas import (
+    InferenceParams,
+    LmParams,
+    LmProviderType,
+    OnTokenType,
+    OnStartEmitType,
+)
 
 __pkgname__ = "locallm"
 __version__ = version(__pkgname__)
@@ -20,4 +26,5 @@ __all__ = [
     "LmParams",
     "LmProviderType",
     "OnTokenType",
+    "OnStartEmitType",
 ]

@@ -62,10 +62,11 @@ class KoboldcppLm(LmProvider):
             "Content-Type": "application/json",
             "Accept": "text/event-stream",
         }
+        self.load_model("", 0)
 
     def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int] = None):
         """
-        Set the model's context window size
+        Set the model's param from server
 
         Args:
             model_name (str): The name of the model to be loaded.
@@ -78,10 +79,20 @@ class KoboldcppLm(LmProvider):
             >>> lm = KoboldcppLm(LmParams(is_verbose=True))
             >>> lm.load_model('my_model.gguf', 2048)
         """
+        url = self.url + "/api/extra/true_max_context_length"
+        res = requests.get(url)
+        data = res.json()
+        v = int(data["value"])
+        self.ctx = v
         if self.is_verbose is True:
-            print("Setting model context window to", ctx)
-        self.ctx = ctx
-        self.loaded_model = model_name
+            print("Setting model context window to", v)
+        url = self.url + "/api/v1/model"
+        res = requests.get(url)
+        data = res.json()
+        m = data["result"]
+        self.loaded_model = m
+        if self.is_verbose is True:
+            print("Setting model to", m)
 
     def infer(
         self,

@@ -20,7 +20,6 @@ def main():
             # on_start_emit=on_start_emit,
         )
     )
-    lm.load_model("", 8192)  # sets the context window size to 8196 tokens
     # the template is for Mistral 7B: change it accordingly to you model requirements
     template = "<s>[INST] {prompt} [/INST]"
     lm.infer(
