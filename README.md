@@ -111,7 +111,7 @@ Providers:
 Other:
 
 - [Cli](https://github.com/abetlen/llama-cpp-python/examples/cli): a Python terminal client
-- [Docstrings]((https://github.com/abetlen/llama-cpp-python/examples/local)): generate docstrings from code
+- [Autodoc](https://github.com/emencia/locallm/tree/master/examples/autodoc): generate docstrings from code
 
 ## Api
 
