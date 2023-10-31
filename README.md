@@ -9,7 +9,9 @@ An api to query local language models using different backends. Supported backen
 
 ## Quickstart
 
-For now clone the repository and install the requirements. A pip package is to come
+```bash
+pip install locallm
+```
 
 ### Local
 
