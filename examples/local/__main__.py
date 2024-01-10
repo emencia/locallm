@@ -4,7 +4,7 @@ import sys
 from locallm import InferenceParams, LmParams, LocalLm
 
 # > cd examples
-# > python -m goinfer /home/me/models
+# > python -m local /home/me/models
 # the argument is the path to the models directory
 # to get the model used in this example:
 # wget https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.Q4_K_M.gguf

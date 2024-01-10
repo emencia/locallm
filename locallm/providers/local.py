@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import Any, Iterator, List, Optional
 from pathlib import Path
-from llama_cpp import Llama
+from llama_cpp import CompletionChunk, Llama
 from ..schemas import (
     InferenceParams,
     InferenceResult,
@@ -17,6 +17,7 @@ class LocalLm(LmProvider):
     llm: Llama | None = None
     models_dir = ""
     loaded_model = ""
+    ctx = 2048
     is_verbose = False
     on_token: OnTokenType | None = None
     on_start_emit: OnStartEmitType | None = None
@@ -76,6 +77,40 @@ class LocalLm(LmProvider):
                 n_ctx=ctx,
             )
         self.loaded_model = model_name
+        self.ctx = ctx
+
+    def generate(
+        self,
+        prompt: str,
+        params: InferenceParams = InferenceParams(),
+    ) -> Iterator[CompletionChunk]:
+        """
+        Run an inference query for a prompt and params and return an iterator
+
+        Args:
+            prompt (str): The prompt to use for the inference.
+            params (InferenceParams, optional): The inference parameters. Defaults to
+                InferenceParams().
+
+        Returns:
+            Iterator[CompletionChunk]: The stream iterator
+
+        Raises:
+            Exception: If no model is loaded. Use the load_model method first.
+
+        Example:
+            >>> from locallm import LocalLm
+            >>> lm = LocalLm(model_path='/absolute/path/to/models')
+            >>> lm.load_model('my_model.gguf', 2048)
+            >>> stream = lm.infer("What is the capital of France?")
+            >>> for (line in stream):
+            >>>     # process the line
+        """
+        params.stream = True
+        res: Iterator[CompletionChunk] = self._infer(  # type: ignore
+            prompt, params, True
+        )
+        return res
 
     def infer(
         self,
@@ -101,10 +136,18 @@ class LocalLm(LmProvider):
             >>> lm = LocalLm(model_path='/absolute/path/to/models')
             >>> lm.load_model('my_model.gguf', 2048)
             >>> result = lm.infer("What is the capital of France?")
-            Paris
             >>> print(result)
             {'text': 'Paris', 'stats': {}}
         """
+        res: InferenceResult = self._infer(prompt, params)  # type: ignore
+        return res
+
+    def _infer(
+        self,
+        prompt: str,
+        params: InferenceParams = InferenceParams(),
+        return_stream=False,
+    ) -> InferenceResult | Iterator[Any]:
         tpl = params.template or "{prompt}"
         final_prompt = tpl.replace("{prompt}", prompt)
         if self.is_verbose is True:
@@ -128,9 +171,12 @@ class LocalLm(LmProvider):
             final_prompt,
             **final_params,
         )
+        if return_stream is True:
+            s: Iterator[CompletionChunk] = stream  # type: ignore
+            return s
         buf: List[str] = []
         i = 0
-        if params.stream:
+        if params.stream is True:
             for output in stream:
                 if i == 0:
                     if self.on_start_emit:
@@ -141,7 +187,8 @@ class LocalLm(LmProvider):
                     txt = output["choices"][0]["text"]  # type: ignore
                 except Exception:
                     pass
-                if self.on_token:
+                if self.on_token is not None:
+                    print("T", txt)
                     self.on_token(txt)
                 buf.append(txt)
                 i += 1

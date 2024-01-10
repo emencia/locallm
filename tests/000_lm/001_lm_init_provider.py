@@ -1,18 +1,12 @@
-from locallm import LocalLm, GoinferLm, KoboldcppLm, OllamaLm
+from locallm import LocalLm, KoboldcppLm, OllamaLm
 from locallm.schemas import LmParams
-from tests.localconf import MODELS_DIR, API_KEY
+from tests.localconf import MODELS_DIR
 
 
 def test_init_local_lm():
     builder = LocalLm(LmParams(models_dir=MODELS_DIR))
     assert builder.models_dir == MODELS_DIR
     assert builder.ptype == "local"
-    assert builder.loaded_model == ""
-
-
-def test_init_goinfer():
-    builder = GoinferLm(LmParams(api_key=API_KEY))
-    assert builder.ptype == "goinfer"
     assert builder.loaded_model == ""
 
 

@@ -1,8 +1,9 @@
 from typing import Any, Callable, Dict, List, Literal, Optional, TypedDict
+from llama_cpp import LlamaGrammar
 from pydantic import BaseModel
 
 
-LmProviderType = Literal["local", "goinfer", "koboldcpp", "ollama"]
+LmProviderType = Literal["local", "koboldcpp", "ollama"]
 
 OnTokenType = Callable[[str], None]
 
@@ -27,6 +28,11 @@ class InferenceParams(BaseModel):
             controls the probability distribution over vocabulary. Defaults to `None`.
         top_p (Optional[float], optional): The probability cutoff for top-p sampling.
             Defaults to `None`.
+        top_k (Optional[int], optional): The top k most likely words to sample from.
+            Defaults to `None`.
+        min_p (Optional[float], optional): the minimum probability for a token to be
+            considered, relative to the probability of the most likely token.s.
+            Defaults to `None`.
         stop (Optional[List[str]], optional): A list of words to stop the model from
             generating. Defaults to `None`.
         frequency_penalty (Optional[float], optional): The frequency penalty for rare
@@ -35,10 +41,9 @@ class InferenceParams(BaseModel):
             words. Defaults to `None`.
         repeat_penalty (Optional[float], optional): The repeat penalty for repeating
             sequences of words. Defaults to `None`.
-        top_k (Optional[int], optional): The top k most likely words to sample from.
-            Defaults to `None`.
         tfs (Optional[float], optional): The temperature factor for top-k sampling.
             Defaults to `None`.
+        grammar (Optional[LlamaGrammar]): a gbnf grammar. Defaults to `None`.
 
     Returns:
         None
@@ -54,13 +59,15 @@ class InferenceParams(BaseModel):
     threads: Optional[int] = None
     max_tokens: Optional[int] = None
     temperature: Optional[float] = None
+    top_k: Optional[int] = None
     top_p: Optional[float] = None
+    min_p: Optional[float] = None
     stop: Optional[List[str]] = None
     frequency_penalty: Optional[float] = None
     presence_penalty: Optional[float] = None
     repeat_penalty: Optional[float] = None
-    top_k: Optional[int] = None
     tfs: Optional[float] = None
+    grammar: Optional[LlamaGrammar] = None
 
 
 class LmParams(BaseModel):

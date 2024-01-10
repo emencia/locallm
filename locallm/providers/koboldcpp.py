@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, Any, Iterator
 import json
 import sseclient
 import requests
@@ -94,6 +94,37 @@ class KoboldcppLm(LmProvider):
         if self.is_verbose is True:
             print("Setting model to", m)
 
+    def generate(
+        self,
+        prompt: str,
+        params: InferenceParams = InferenceParams(),
+    ) -> Iterator[Any]:
+        """
+        Run an inference query for a prompt and params and return an iterator
+
+        Args:
+            prompt (str): The prompt to use for the inference.
+            params (InferenceParams, optional): The inference parameters. Defaults to
+                InferenceParams().
+
+        Returns:
+            Iterator[Any]: The stream iterator
+
+        Raises:
+            Exception: If no model is loaded. Use the load_model method first.
+
+        Example:
+            >>> from locallm import LocalLm
+            >>> lm = LocalLm(model_path='/absolute/path/to/models')
+            >>> lm.load_model('my_model.gguf', 2048)
+            >>> stream = lm.infer("What is the capital of France?")
+            >>> for (line in stream):
+            >>>     # process the line
+        """
+        params.stream = True
+        res: Iterator[Any] = self._infer(prompt, params, True)  # type: ignore
+        return res
+
     def infer(
         self,
         prompt: str,
@@ -119,6 +150,15 @@ class KoboldcppLm(LmProvider):
             >>> print(result)
             {'text': 'Paris', 'stats': {}}
         """
+        res: InferenceResult = self._infer(prompt, params)  # type: ignore
+        return res
+
+    def _infer(
+        self,
+        prompt: str,
+        params: InferenceParams = InferenceParams(),
+        return_stream=False,
+    ) -> InferenceResult | Iterator[Any]:
         tpl = params.template or "{prompt}"
         final_prompt = tpl.replace("{prompt}", prompt)
         if self.is_verbose is True:
@@ -155,6 +195,8 @@ class KoboldcppLm(LmProvider):
         url = self.url + "/api/extra/generate/stream"
         response = requests.post(url, stream=True, headers=self.headers, json=payload)
         client = sseclient.SSEClient(response)  # type: ignore
+        if return_stream is True:
+            return client.events()
         buf = []
         i = 0
         for event in client.events():

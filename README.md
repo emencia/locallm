@@ -1,11 +1,12 @@
 # Locallm
 
+[![pub package](https://img.shields.io/pypi/v/locallm)](https://pypi.org/project/locallm/)
+
 An api to query local language models using different backends. Supported backends:
 
 - [Llama.cpp Python](https://github.com/abetlen/llama-cpp-python): the local Python bindings for Llama.cpp
 - [Kobold.cpp](https://github.com/LostRuins/koboldcpp): the Koboldcpp api server
 - [Ollama](https://github.com/jmorganca/ollama): the Ollama api server
-- [Goinfer](https://github.com/synw/goinfer): the Goinfer api server
 
 ## Quickstart
 
@@ -76,29 +77,6 @@ lm.infer(
 )
 ```
 
-### Goinfer
-
-```python
-from locallm import GoinferLm, LmParams, InferenceParams
-
-lm = GoinferLm(
-    LmParams(
-        api_key="7aea109636aefb984b13f9b6927cd174425a1e05ab5f2e3935ddfeb183099465",
-    )
-)
-lm.load_model("mistral-7b-instruct-v0.1.Q4_K_M.gguf", 8192)
-template = "<s>[INST] {prompt} [/INST]"
-lm.infer(
-    "list the planets in the solar system",
-    InferenceParams(
-        stream=True,
-        template=template,
-        temperature=0.2,
-        top_p=0.35,
-    ),
-)
-```
-
 ## Examples
 
 Providers:
@@ -106,7 +84,6 @@ Providers:
 - [Llama.cpp Python](https://github.com/abetlen/llama-cpp-python/examples/local) provider
 - [Kobold.cpp](https://github.com/LostRuins/koboldcpp/examples/koboldcpp) provider
 - [Ollama](https://github.com/jmorganca/ollama/ollama) provider
-- [Goinfer](https://github.com/synw/goinfer/goinfer) provider
 
 Other:
 
@@ -203,12 +180,14 @@ Parameters for inference.
 - **max\_tokens** `int, Optional`: The maximum number of tokens to generate.
 - **temperature** `float, Optional`: The temperature for the model.
 - **top\_p** `float, Optional`: The probability cutoff for the top k tokens.
+- **top\_k** `int, Optional`: The top k tokens to generate.
+- **min\_p** `float, Optional`: The minimum probability for a token to be considered.
 - **stop** `List[str], Optional`: A list of words to stop the model from generating.
 - **frequency\_penalty** `float, Optional`: The frequency penalty for the model.
 - **presence\_penalty** `float, Optional`: The presence penalty for the model.
 - **repeat\_penalty** `float, Optional`: The repeat penalty for the model.
-- **top\_k** `int, Optional`: The top k tokens to generate.
 - **tfs** `float, Optional`: The temperature for the model.
+- **grammar** `LlamaGrammar, Optional`: a gbnf grammar
 
 ### Example
 

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Iterator, Any
 from llama_cpp import Llama
 from .schemas import (
     InferenceParams,
@@ -130,5 +130,35 @@ class LmProvider(ABC):
             "text": "The planets ...",
             "stats": {}, // depends on the provider
         }
+        """
+        pass
+
+    @abstractmethod
+    def generate(
+        self,
+        prompt: str,
+        params: InferenceParams = InferenceParams(),
+    ) -> Iterator[Any]:
+        """
+        Run an inference query for a prompt and params
+
+        Args:
+            prompt (str): The prompt to use for the inference.
+            params (InferenceParams, optional): The inference parameters. Defaults to
+                InferenceParams().
+
+        Returns:
+            InferenceResult: The result of the inference.
+
+        Raises:
+            Exception: If no model is loaded. Use the load_model method first.
+
+        Example:
+            >>> from locallm import GoinferLm, LmParams
+            >>> lm = GoinferLm(LmParams(api_key="5dz78.."))
+            >>> lm.load_model('my_model.gguf', 2048)
+            >>> stream = lm.infer("What is the capital of France?")
+            >>> for (line in stream):
+            >>>     # process the line
         """
         pass

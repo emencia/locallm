@@ -1,5 +1,5 @@
 import json
-from typing import Dict, Optional
+from typing import Dict, Iterator, Optional, Any
 import requests
 
 from ..schemas import (
@@ -108,10 +108,49 @@ class OllamaLm(LmProvider):
             >>> lm = OllamaLm(LmParams(is_verbose=True))
             >>> lm.load_model('my_model', 2048)
             >>> result = lm.infer("What is the capital of France?")
-            Paris
             >>> print(result)
             {'text': 'Paris', 'stats': {}}
         """
+        res: InferenceResult = self._infer(prompt, params)  # type: ignore
+        return res
+
+    def generate(
+        self,
+        prompt: str,
+        params: InferenceParams = InferenceParams(),
+    ) -> Iterator[Any]:
+        """
+        Run an inference query for a prompt and params and return a stream
+
+        Args:
+            prompt (str): The prompt to use for the inference.
+            params (InferenceParams, optional): The inference parameters. Defaults to
+                InferenceParams().
+
+        Returns:
+            InferenceResult: The result of the inference.
+
+        Raises:
+            Exception: If no model is loaded. Use the load_model method first.
+
+        Example:
+            >>> from locallm import OllamaLm, LmParams
+            >>> lm = OllamaLm(LmParams(is_verbose=True))
+            >>> lm.load_model('my_model', 2048)
+            >>> stream = lm.infer("What is the capital of France?")
+            >>> for (line in stream):
+            >>>     # process the line
+        """
+        params.stream = True
+        res: Iterator[Any] = self._infer(prompt, params, True)  # type: ignore
+        return res
+
+    def _infer(
+        self,
+        prompt: str,
+        params: InferenceParams = InferenceParams(),
+        return_stream=False,
+    ) -> InferenceResult | Iterator[Any]:
         tpl = params.template or "{prompt}"
         final_prompt = tpl.replace("{prompt}", prompt)
         if self.is_verbose:
@@ -147,6 +186,9 @@ class OllamaLm(LmProvider):
         response = requests.post(url, stream=True, headers=self.headers, json=payload)
         text = ""
         res = {}
+        if return_stream is True:
+            s: Iterator[Any] = response.iter_lines()  # type: ignore
+            return s
         for line in response.iter_lines():
             body = json.loads(line)
             token = body.get("response", "")
