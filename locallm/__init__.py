@@ -1,7 +1,6 @@
 """An api to query local language models using different backends"""
 from importlib.metadata import version
 from .provider import LmProvider
-from .providers.goinfer import GoinferLm
 from .providers.koboldcpp import KoboldcppLm
 from .providers.ollama import OllamaLm
 from .providers.local import LocalLm
@@ -18,7 +17,6 @@ __version__ = version(__pkgname__)
 
 __all__ = [
     "LmProvider",
-    "GoinferLm",
     "KoboldcppLm",
     "OllamaLm",
     "LocalLm",
