@@ -1,5 +1,4 @@
 from typing import Any, Callable, Dict, List, Literal, Optional, TypedDict
-from llama_cpp import LlamaGrammar
 from pydantic import BaseModel
 
 
@@ -43,7 +42,7 @@ class InferenceParams(BaseModel):
             sequences of words. Defaults to `None`.
         tfs (Optional[float], optional): The temperature factor for top-k sampling.
             Defaults to `None`.
-        grammar (Optional[LlamaGrammar]): a gbnf grammar. Defaults to `None`.
+        grammar (Optional[str]): a gbnf grammar. Defaults to `None`.
 
     Returns:
         None
@@ -67,7 +66,7 @@ class InferenceParams(BaseModel):
     presence_penalty: Optional[float] = None
     repeat_penalty: Optional[float] = None
     tfs: Optional[float] = None
-    grammar: Optional[LlamaGrammar] = None
+    grammar: Optional[str] = None
 
 
 class LmParams(BaseModel):

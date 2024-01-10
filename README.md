@@ -187,7 +187,7 @@ Parameters for inference.
 - **presence\_penalty** `float, Optional`: The presence penalty for the model.
 - **repeat\_penalty** `float, Optional`: The repeat penalty for the model.
 - **tfs** `float, Optional`: The temperature for the model.
-- **grammar** `LlamaGrammar, Optional`: a gbnf grammar
+- **grammar** `str, Optional`: A gbnf grammar to constraint the model's output
 
 ### Example
 
@@ -231,8 +231,6 @@ run the tests:
 MODELS_DIR = "/home/me/my/models/dir"
 # the model to use in the tests
 MODEL = "q5_1-gguf-mamba-gpt-3B_v4.gguf"
-# the Goinfer api key
-API_KEY = "7aea109636aefb984b13f9b6927cd174425a1e05ab5f2e3935ddfeb183099465"
 # the context window size for the tests
 CTX = 2048
 ```
