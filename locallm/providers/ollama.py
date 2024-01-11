@@ -204,3 +204,6 @@ class OllamaLm(LmProvider):
                 del res["model"]
                 del res["created_at"]
         return {"text": text, "stats": res}
+
+    def abort(self):
+        pass

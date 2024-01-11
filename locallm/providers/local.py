@@ -214,3 +214,6 @@ class LocalLm(LmProvider):
         else:
             text = stream["choices"][0]["text"]  # type: ignore
         return {"text": text, "stats": {}}
+
+    def abort(self):
+        pass
