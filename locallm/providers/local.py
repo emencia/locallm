@@ -21,6 +21,9 @@ class LocalLm(LmProvider):
     is_verbose = False
     on_token: OnTokenType | None = None
     on_start_emit: OnStartEmitType | None = None
+    embedding: bool = False
+    threads: Optional[int] = None
+    gpu_layers: int = 0
 
     def __init__(
         self,
@@ -37,7 +40,7 @@ class LocalLm(LmProvider):
 
         Example:
             >>> from locallm import LocalLm, LmParams
-            >>> lm = LocalLm(LmParams(model_path='/absolute/path/to/models'))
+            >>> lm = LocalLm(LmParams(model_dir='/absolute/path/to/models'))
         """
         self.ptype = "local"
         if params.models_dir is None:
@@ -52,6 +55,12 @@ class LocalLm(LmProvider):
             self.on_token = defaultOnToken
         if params.on_start_emit:
             self.on_start_emit = params.on_start_emit
+        if params.embedding:
+            self.embedding = params.embedding
+        if params.threads:
+            self.threads = params.threads
+        if params.gpu_layers:
+            self.gpu_layers = params.gpu_layers
 
     def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int] = None):
         """
@@ -65,17 +74,26 @@ class LocalLm(LmProvider):
 
         Example:
             >>> from locallm import LocalLm, LmParams
-            >>> lm = LocalLm(LmParams(model_path='/absolute/path/to/models'))
+            >>> lm = LocalLm(LmParams(model_dir='/absolute/path/to/models'))
             >>> lm.load_model('my_model.gguf', 2048)
         """
         if self.is_verbose is True:
             print("Loading model", self.models_dir, model_name)
         p = Path(self.models_dir) / model_name
         if self.loaded_model != model_name:
-            self.llm = Llama(
-                model_path=str(p),
-                n_ctx=ctx,
-            )
+            params = {
+                "model_path": str(p),
+                "n_ctx": ctx,
+            }
+            if self.embedding:
+                params["embedding"] = self.embedding
+            if self.threads:
+                params["threads"] = self.threads
+            if gpu_layers:
+                params["gpu_layers"] = gpu_layers
+            elif self.gpu_layers:
+                params["gpu_layers"] = self.gpu_layers
+            self.llm = Llama(**params)
         self.loaded_model = model_name
         self.ctx = ctx
 

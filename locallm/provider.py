@@ -162,3 +162,8 @@ class LmProvider(ABC):
             >>>     # process the line
         """
         pass
+
+    @abstractmethod
+    def abort(self):
+        """Abort a running inference query"""
+        pass

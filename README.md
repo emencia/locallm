@@ -101,10 +101,12 @@ providers implement this api
 
 - **llm** `Optional[Llama]`: the language model.
 - **models_dir** `str`: the directory where the models are stored.
-- **loaded_model** `str`: the name of the loaded model.
 - **api_key** `str`: the API key for the language model.
 - **server_url** `str`: the URL of the language model server.
 - **is_verbose** `bool`: whether to print more information.
+- **threads** `Optional[int]`: the numbers of threads to use.
+- **gpu_layers** `Optional[int]`: the numbers of layers to offload to the GPU.
+- **embedding** `Optional[bool]`: use embeddings or not.
 - **on_token** `OnTokenType`: the function to be called when a token is generated. Default: outputs the token to the terminal.
 - **on_start_emit** `OnStartEmitType`: the function to be called when the model starts emitting tokens.
 

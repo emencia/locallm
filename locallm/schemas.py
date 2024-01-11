@@ -82,6 +82,12 @@ class LmParams(BaseModel):
             models. Defaults to None.
         is_verbose (Optional[bool], optional): Whether to print verbose output. Defaults
             to False.
+        threads (Optional[int], optional): The number of threads to use.
+            Defaults to `None
+        gpu_layers (Optional[int], optional): The number of gpu layers to use.
+            Defaults to `None
+        embedding (Optional[bool], optional): Use the embeddings or not.
+            Defaults to `None
         on_token (Optional[OnTokenType], optional): A function to call for when a new
             token is received. Defaults to None. If not specified the default function
             will output the token to the terminal
@@ -96,6 +102,9 @@ class LmParams(BaseModel):
     api_key: Optional[str] = None
     server_url: Optional[str] = None
     is_verbose: Optional[bool] = None
+    threads: Optional[int] = None
+    gpu_layers: Optional[int] = None
+    embedding: Optional[bool] = None
     on_token: Optional[OnTokenType] = None
     on_start_emit: Optional[OnStartEmitType] = None
 

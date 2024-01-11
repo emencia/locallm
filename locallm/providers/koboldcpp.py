@@ -212,3 +212,8 @@ class KoboldcppLm(LmProvider):
             buf.append(data["token"])
             i += 1
         return {"text": "".join(buf), "stats": {}}
+
+    def abort(self):
+        headers = {"Content-Type": "application/json"}
+        payload = {"genKey": ""}
+        requests.post("/api/extra/abort", headers=headers, json=payload)
