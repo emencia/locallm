@@ -171,7 +171,6 @@ class LocalLm(LmProvider):
         if self.is_verbose is True:
             print("Running inference with prompt:")
             print(final_prompt)
-
         if self.llm is None:
             raise Exception("No model is loaded: use the load_model method first")
         final_params = params.model_dump(exclude_none=True, exclude_unset=True)
@@ -182,6 +181,12 @@ class LocalLm(LmProvider):
         if "tfs" in final_params:
             final_params["tfs_z"] = final_params["tfs"]
             del final_params["tfs"]
+        if "gpu_layers" in final_params:
+            final_params["n_gpu_layers"] = final_params["n_gpu_layers"]
+            del final_params["gpu_layers"]
+        if "threads" in final_params:
+            final_params["n_threads"] = final_params["threads"]
+            del final_params["n_threads"]
         if self.is_verbose is True:
             print("Inference parameters:")
             print(final_params)
