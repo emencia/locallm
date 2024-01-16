@@ -182,11 +182,11 @@ class LocalLm(LmProvider):
             final_params["tfs_z"] = final_params["tfs"]
             del final_params["tfs"]
         if "gpu_layers" in final_params:
-            final_params["gpu_layers"] = final_params["n_gpu_layers"]
+            final_params["n_gpu_layers"] = final_params["gpu_layers"]
             del final_params["gpu_layers"]
         if "threads" in final_params:
-            final_params["threads"] = final_params["n_threads"]
-            del final_params["n_threads"]
+            final_params["n_threads"] = final_params["threads"]
+            del final_params["threads"]
         if self.is_verbose is True:
             print("Inference parameters:")
             print(final_params)
