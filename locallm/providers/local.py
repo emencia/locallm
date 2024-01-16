@@ -88,11 +88,11 @@ class LocalLm(LmProvider):
             if self.embedding:
                 params["embedding"] = self.embedding
             if self.threads:
-                params["threads"] = self.threads
+                params["n_threads"] = self.threads
             if gpu_layers:
-                params["gpu_layers"] = gpu_layers
+                params["n_gpu_layers"] = gpu_layers
             elif self.gpu_layers:
-                params["gpu_layers"] = self.gpu_layers
+                params["n_gpu_layers"] = self.gpu_layers
             self.llm = Llama(**params)
         self.loaded_model = model_name
         self.ctx = ctx
