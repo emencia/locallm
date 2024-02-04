@@ -81,14 +81,14 @@ class KoboldcppLm(LmProvider):
             >>> lm.load_model('my_model.gguf', 2048)
         """
         url = self.url + "/api/extra/true_max_context_length"
-        res = requests.get(url)
+        res = requests.get(url, headers=self.headers)
         data = res.json()
         v = int(data["value"])
         self.ctx = v
         if self.is_verbose is True:
             print("Setting model context window to", v)
         url = self.url + "/api/v1/model"
-        res = requests.get(url)
+        res = requests.get(url, headers=self.headers)
         data = res.json()
         m = data["result"]
         self.loaded_model = m
