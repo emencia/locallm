@@ -62,7 +62,7 @@ lm.infer(
 ```python
 from locallm import OllamaLm, LmParams, InferenceParams
 
-lm = Ollama(
+lm = OllamaLm(
     LmParams(is_verbose=True)
 )
 lm.load_model("mistral-7b-instruct-v0.1.Q4_K_M.gguf", 8192)
