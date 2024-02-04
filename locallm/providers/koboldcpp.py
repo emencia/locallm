@@ -58,10 +58,11 @@ class KoboldcppLm(LmProvider):
         if params.on_start_emit:
             self.on_start_emit = params.on_start_emit
         self.headers = {
-            # "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
             "Accept": "text/event-stream",
         }
+        if params.api_key:
+            self.headers["Authorization"] = f"Bearer {params.api_key}"
         self.load_model("", 0)
 
     def load_model(self, model_name: str, ctx: int, gpu_layers: Optional[int] = None):
